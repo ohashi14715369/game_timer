@@ -1,9 +1,10 @@
-import * as actionTypes from '../utils/actionTypes';
-const initialAppState = {
-
+const initialState = {
+    count: 0
 };
-const gametimer = (state = initialAppState, action) => {
-    if (action.type === actionTypes.TEST) {
-        return {};
+const gametimer = (state = initialState, action) => {
+    switch (action.type) {
+        default:
+            return { ...state };
     }
 };
+export default gametimer;
