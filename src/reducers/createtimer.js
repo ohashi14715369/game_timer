@@ -1,19 +1,35 @@
-import * as actionTypes from '../utils/actionTypes';
+import { CREATE_TIMER } from '../utils/actionTypes';
 const initialState = {
-    show: false
+    show: false,
+    hour: 0,
+    minute: 0,
+    second: 0
 };
 const createtimer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.OPEN_CREATE_TIMER:
+        case CREATE_TIMER.OPEN:
             return {
                 ...state,
-                show: true
+                show: true,
+                hour: 0,
+                minute: 0,
+                second: 0
             };
-        case actionTypes.CLOSE_CREATE_TIMER:
+        case CREATE_TIMER.CLOSE:
             return {
                 ...state,
                 show: false
-            }
+            };
+        case CREATE_TIMER.CHANGE:
+            return {
+                ...state,
+                [action.key]: action.value
+            };
+        case CREATE_TIMER.REGISTER:
+            return {
+                ...state,
+                show: false
+            };
         default:
             return { ...state };
     }

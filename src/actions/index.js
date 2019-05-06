@@ -1,8 +1,25 @@
-import * as actionTypes from '../utils/actionTypes';
-
-export const openCreateTimer = () => ({
-    type: actionTypes.OPEN_CREATE_TIMER
+import { CREATE_TIMER } from '../utils/actionTypes';
+export const createTimerOpen = () => ({
+    type: CREATE_TIMER.OPEN
 });
-export const closeCreateTimer = () => ({
-    type: actionTypes.CLOSE_CREATE_TIMER
+export const createTimerClose = () => ({
+    type: CREATE_TIMER.CLOSE
 });
+export const createTimerChange = (key, value) => ({
+    type: CREATE_TIMER.CHANGE,
+    key,
+    value
+});
+export const createTimerRegister = () => {
+    return function (dispatch, getState) {
+        const { hour, minute, second } = getState().createtimer;
+        dispatch(
+            {
+                type: CREATE_TIMER.REGISTER,
+                hour,
+                minute,
+                second
+            });
+        dispatch(createTimerClose());
+    };
+}
