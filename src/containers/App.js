@@ -20,8 +20,13 @@ import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 
 import NumberSelect from '../components/NumberSelect';
+import Timer from '../components/Timer';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    props.actions.loadGameTimer();
+  }
   render() {
     const { gametimer, createtimer, actions, classes } = this.props;
     return (
@@ -37,7 +42,7 @@ class App extends Component {
           </Toolbar>
         </AppBar>
         {
-          _.map(gametimer.timers, timer => <div>{timer.hour}:{timer.minute}:{timer.second}</div>)
+          _.map(gametimer.timers, timer => <Timer key={timer.timerId} timer={timer} />)
         }
         <Fab color="secondary" aria-label="Add" className={classes.addButton} onClick={() => actions.createTimerOpen()}>
           <AddIcon />

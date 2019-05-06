@@ -4,3 +4,6 @@ export const CREATE_TIMER = {
     CLOSE: 'CREATE_TIMER.CLOSE',
     REGISTER: 'CREATE_TIMER.REGISTER'
 };
+export const GAME_TIMER = {
+    LOAD: 'GAME_TIMER.LOAD'
+}
