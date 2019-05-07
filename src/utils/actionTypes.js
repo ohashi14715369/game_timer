@@ -5,5 +5,6 @@ export const CREATE_TIMER = {
     REGISTER: 'CREATE_TIMER.REGISTER'
 };
 export const GAME_TIMER = {
-    LOAD: 'GAME_TIMER.LOAD'
+    LOAD: 'GAME_TIMER.LOAD',
+    DELETE: 'GAME_TIMER.DELETE'
 }

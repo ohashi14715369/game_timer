@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import moment from 'moment';
-import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+
+import * as actions from '../actions';
 
 class Timer extends Component {
     constructor(props) {
@@ -15,14 +22,18 @@ class Timer extends Component {
             end: null,
             text: this.getText(start, end),
             timer: null,
-            millis: end.diff(start, 'seconds') * 1000
+            millis: end.diff(start, 'seconds') * 1000,
+            passed: 0
         };
     }
     start() {
         const INTERVAL = 16;
-        const { millis } = this.state;
+        const { millis, passed } = this.state;
         var start = moment();
-        var end = moment().add(millis, 'milliseconds');
+        var end = moment().add(millis - passed, 'milliseconds');
+        if (this.state.timer) {
+            clearInterval(this.state.timer);
+        }
         this.setState(prev => ({
             ...prev,
             start,
@@ -31,8 +42,22 @@ class Timer extends Component {
         }));
     }
     stop() {
-        clearInterval(this.state.timer);
-        this.setState(prev => ({ ...prev, start: null, end: null, timer: null, millis: this.state.end.diff(moment(), 'milliseconds') }));
+        if (this.state.timer) {
+            clearInterval(this.state.timer);
+            this.setState(prev => ({ ...prev, start: null, end: null, timer: null, passed: this.state.passed + moment().diff(this.state.start, 'milliseconds') }));
+        }
+    }
+    reset() {
+        const { millis } = this.state;
+        var start = moment();
+        var end = moment().add(millis, 'milliseconds');
+        this.setState(prev => ({
+            ...prev,
+            start,
+            end,
+            text: this.getText(start, end),
+            passed: 0
+        }));
     }
     update() {
         this.setState(prev => ({ ...prev, text: this.getText(moment(), prev.end) }));
@@ -51,9 +76,45 @@ class Timer extends Component {
             + ":" + ("00" + seconds).slice(-2)
             + "." + ("000" + millis).slice(-3);
     }
+    delete() {
+        if (this.state.timer) {
+            clearInterval(this.state.timer);
+        }
+        this.props.actions.timerDelete(this.props.timer.id);
+    }
     render() {
-        const { text } = this.state;
-        return <div>{text}<Button onClick={() => this.start()}>start</Button><Button onClick={() => this.stop()}>end</Button></div>
+        const { classes } = this.props;
+        const { text, timer } = this.state;
+        return <div>
+            <Typography variant="body1" gutterBottom>{text}</Typography>
+            <IconButton color="secondary" className={classes.button} aria-label="start"
+                onClick={() => this.start()} disabled={timer != null}>
+                <Icon>play_arrow</Icon>
+            </IconButton>
+            <IconButton color="secondary" className={classes.button} aria-label="stop"
+                onClick={() => this.stop()} disabled={timer == null}>
+                <Icon>pause</Icon>
+            </IconButton>
+            <IconButton color="secondary" className={classes.button} aria-label="reset"
+                onClick={() => this.reset()}>
+                <Icon>replay</Icon>
+            </IconButton>
+            <IconButton color="secondary" className={classes.button} aria-label="delete"
+                onClick={() => this.delete()}>
+                <Icon>delete</Icon>
+            </IconButton>
+        </div >
     }
 }
-export default Timer;
+function mapDispatch(dispatch) {
+    return {
+        actions: bindActionCreators(actions, dispatch),
+    };
+}
+
+const styles = theme => ({
+    button: {
+        margin: theme.spacing.unit,
+    }
+});
+export default withStyles(styles)(connect(null, mapDispatch)(Timer));
