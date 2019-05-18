@@ -71,3 +71,6 @@ export const loadGameTimer = () => {
         });
     }
 }
+export const showDrawer = () => { return { type: GAME_TIMER.SHOW_DRAWER }; }
+export const hideDrawer = () => { return { type: GAME_TIMER.HIDE_DRAWER }; }
+export const updateApp = () => { return { type: GAME_TIMER.UPDATE_APP }; }

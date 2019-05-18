@@ -2,9 +2,11 @@ import { CREATE_TIMER, GAME_TIMER } from '../utils/actionTypes';
 import _ from 'lodash';
 
 const initialState = {
-    timers: []
+    timers: [],
+    visibleDrawer: false
 };
 const gametimer = (state = initialState, action) => {
+    console.log(action);
     switch (action.type) {
         case CREATE_TIMER.REGISTER:
             return {
@@ -22,6 +24,22 @@ const gametimer = (state = initialState, action) => {
                 ...state,
                 timers: _.chain(state.timers).reject(timer => timer.id === action.id).value()
             };
+        case GAME_TIMER.SHOW_DRAWER:
+            return {
+                ...state,
+                visibleDrawer: true
+            };
+        case GAME_TIMER.HIDE_DRAWER:
+            return {
+                ...state,
+                visibleDrawer: false
+            };
+        case GAME_TIMER.UPDATE_APP:
+            navigator.serviceWorker.getRegistration()
+                .then(registration => {
+                    registration.unregister();
+                });
+            return { ...state };
         default:
             return { ...state };
     }

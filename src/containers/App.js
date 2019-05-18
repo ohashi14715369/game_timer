@@ -13,6 +13,10 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
@@ -33,14 +37,29 @@ class App extends Component {
             <div className={classes.root} >
                 <AppBar position="static">
                     <Toolbar variant="dense">
-                        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+                        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={() => actions.showDrawer()}>
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="h6" color="inherit">
-                            Game Timer
-          </Typography>
+                        <Typography variant="h6" color="inherit">Game Timer</Typography>
                     </Toolbar>
                 </AppBar>
+
+                <Drawer open={gametimer.visibleDrawer} onClose={() => actions.hideDrawer()}>
+                    <div
+                        tabIndex={0}
+                        role="button"
+                        onClick={() => actions.hideDrawer()}
+                        onKeyDown={() => actions.hideDrawer()}
+                    >
+                        <div className={classes.list}>
+                            <List>
+                                <ListItem button onClick={() => actions.updateApp()}>
+                                    <ListItemText primary="Update" />
+                                </ListItem>
+                            </List>
+                        </div>
+                    </div>
+                </Drawer>
                 {
                     _.map(gametimer.timers, timer => <Timer key={timer.id} timer={timer} />)
                 }
