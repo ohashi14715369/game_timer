@@ -1,5 +1,6 @@
 import { CREATE_TIMER, GAME_TIMER } from '../utils/actionTypes';
 import PouchDB from 'pouchdb';
+import { SubmissionError } from 'redux-form';
 import _ from 'lodash';
 
 const timerTable = new PouchDB("TIMER");
@@ -15,11 +16,18 @@ export const createTimerChange = (key, value) => ({
     key,
     value
 });
-export const createTimerRegister = () => {
-    return (dispatch, getState) => {
-        const { hour, minute, second } = getState().createtimer;
+export const createTimerRegister = (values) => {
+    const { hour, minute, second } = values;
+    if (hour + minute + second === 0) {
+        throw new SubmissionError({
+            second: 'Not Zero',
+            _error: 'Not Zero'
+        });
+    }
+    return (dispatch) => {
         const id = new Date();
         timerTable.put({ _id: id, hour, minute, second }).then(result => {
+            console.log(result);
             dispatch(
                 {
                     type: CREATE_TIMER.REGISTER,
@@ -33,7 +41,7 @@ export const createTimerRegister = () => {
     };
 };
 export const timerDelete = (id) => {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         timerTable.get(id).then(doc => timerTable.remove(doc)).then(dispatch({
             type: GAME_TIMER.DELETE,
             id
@@ -43,7 +51,6 @@ export const timerDelete = (id) => {
 export const loadGameTimer = () => {
     return function (dispatch) {
         timerTable.allDocs({ include_docs: true }).then(results => {
-            console.log(results);
             _.forEach(results.rows, (row) => {
                 dispatch({
                     type: CREATE_TIMER.REGISTER,
