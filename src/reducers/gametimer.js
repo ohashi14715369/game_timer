@@ -11,6 +11,7 @@ const gametimer = (state = initialState, action) => {
                 ...state,
                 timers: _.concat(state.timers, {
                     id: action.id,
+                    label: action.label,
                     hour: action.hour,
                     minute: action.minute,
                     second: action.second

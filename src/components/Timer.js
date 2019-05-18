@@ -17,13 +17,15 @@ class Timer extends Component {
             .add(props.timer.hour, 'hours')
             .add(props.timer.minute, 'minutes')
             .add(props.timer.second, 'seconds');
+        var diff = this.getDiff(start, end);
         this.state = {
             start: null,
             end: null,
-            text: this.getText(start, end),
+            text: this.getText(diff),
             timer: null,
-            millis: end.diff(start, 'seconds') * 1000,
-            passed: 0
+            millis: diff,
+            passed: 0,
+            label:props.timer.label
         };
     }
     start() {
@@ -43,8 +45,13 @@ class Timer extends Component {
     }
     stop() {
         if (this.state.timer) {
+            var start = this.state.start;
+            var end = moment();
+            var diff = this.getDiff(start, end);
+            var passed = Math.min(this.state.passed + diff, this.state.millis);
+            var text = this.getText(this.state.millis - passed);
             clearInterval(this.state.timer);
-            this.setState(prev => ({ ...prev, start: null, end: null, timer: null, passed: this.state.passed + moment().diff(this.state.start, 'milliseconds') }));
+            this.setState(prev => ({ ...prev, start: null, end: null, timer: null, passed, text }));
         }
     }
     reset() {
@@ -55,15 +62,30 @@ class Timer extends Component {
             ...prev,
             start,
             end,
-            text: this.getText(start, end),
+            text: this.getText(this.getDiff(start, end)),
             passed: 0
         }));
     }
     update() {
-        this.setState(prev => ({ ...prev, text: this.getText(moment(), prev.end) }));
+        var start = moment();
+        var end = this.state.end;
+        var diff = this.getDiff(start, end);
+        if (diff <= 0) {
+            this.stop();
+            this.notify();
+        }
+        else {
+            this.setState(prev => ({ ...prev, text: this.getText(diff) }));
+        }
     }
-    getText(start, end) {
+    getDiff(start, end) {
         var diff = end.diff(start, 'milliseconds');
+        if (diff < 0) {
+            diff = 0;
+        }
+        return diff;
+    }
+    getText(diff) {
         var millis = diff % 1000;
         diff = Math.floor(diff / 1000);
         var seconds = diff % 60;
@@ -71,6 +93,7 @@ class Timer extends Component {
         var minutes = diff % 60;
         diff = Math.floor(diff / 60);
         var hours = diff;
+
         return ("00" + hours).slice(-2)
             + ":" + ("00" + minutes).slice(-2)
             + ":" + ("00" + seconds).slice(-2)
@@ -82,10 +105,14 @@ class Timer extends Component {
         }
         this.props.actions.timerDelete(this.props.timer.id);
     }
+    notify() {
+        new Notification(this.state.label + " was done!", {silent:true});
+    }
     render() {
         const { classes } = this.props;
-        const { text, timer } = this.state;
+        const { text, timer, label } = this.state;
         return <div>
+            <Typography variant="subtitle1" gutterBottom>{label}</Typography>
             <Typography variant="body1" gutterBottom>{text}</Typography>
             <IconButton color="secondary" className={classes.button} aria-label="start"
                 onClick={() => this.start()} disabled={timer != null}>

@@ -17,7 +17,13 @@ export const createTimerChange = (key, value) => ({
     value
 });
 export const createTimerRegister = (values) => {
-    const { hour, minute, second } = values;
+    const { label, hour, minute, second } = values;
+    if (!label) {
+        throw new SubmissionError({
+            label: 'Not Empty',
+            _error: 'Not Empty'
+        });
+    }
     if (hour + minute + second === 0) {
         throw new SubmissionError({
             second: 'Not Zero',
@@ -26,12 +32,12 @@ export const createTimerRegister = (values) => {
     }
     return (dispatch) => {
         const id = new Date();
-        timerTable.put({ _id: id, hour, minute, second }).then(result => {
-            console.log(result);
+        timerTable.put({ _id: id, label, hour, minute, second }).then(result => {
             dispatch(
                 {
                     type: CREATE_TIMER.REGISTER,
                     id,
+                    label,
                     hour,
                     minute,
                     second
@@ -51,10 +57,12 @@ export const timerDelete = (id) => {
 export const loadGameTimer = () => {
     return function (dispatch) {
         timerTable.allDocs({ include_docs: true }).then(results => {
+            console.log(results);
             _.forEach(results.rows, (row) => {
                 dispatch({
                     type: CREATE_TIMER.REGISTER,
                     id: row.doc._id,
+                    label: row.doc.label,
                     hour: row.doc.hour,
                     minute: row.doc.minute,
                     second: row.doc.second

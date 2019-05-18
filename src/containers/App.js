@@ -24,6 +24,8 @@ class App extends Component {
     constructor(props) {
         super(props);
         props.actions.loadGameTimer();
+        Notification.requestPermission().then(function (result) {
+        });
     }
     render() {
         const { gametimer, createtimer, actions, classes } = this.props;

@@ -4,12 +4,19 @@ import { Field, reduxForm } from 'redux-form';
 import Button from '@material-ui/core/Button';
 
 import NumberSelect from './NumberSelect';
+import { renderTextField } from '../utils/reduxFormHelper';
 
 class TimerForm extends Component {
     render() {
         const { handleSubmit } = this.props;
         return (
             <form onSubmit={handleSubmit}>
+                <div>
+                    <Field name="label"
+                        component={renderTextField}
+                        label="label"
+                    />
+                </div>
                 <div>
                     <Field name="hour"
                         component={NumberSelect}
