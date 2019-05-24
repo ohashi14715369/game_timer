@@ -40,14 +40,16 @@ export const createTimerRegister = (values) => {
             _attachments,
             label, hour, minute, second, soundName
         }).then(result => {
-            readDbRow(dispatch, result);
+            timerTable.get(result.id).then(doc => {
+                readDbRow(dispatch, doc);
+            });
         });
     };
 };
-export const timerDelete = (instanceId) => {
+export const deleteTimer = (instanceId) => {
     return (dispatch) => {
         timerTable.get(instanceId).then(doc => timerTable.remove(doc)).then(dispatch({
-            type: GAME_TIMER.DELETE,
+            type: GAME_TIMER.DELETE_TIMER,
             instanceId
         }));
     };

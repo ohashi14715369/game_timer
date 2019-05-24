@@ -103,13 +103,12 @@ class Timer extends Component {
         if (this.state.timer) {
             clearInterval(this.state.timer);
         }
-        this.props.actions.timerDelete(this.props.timer.instanceId);
+        this.props.actions.deleteTimer(this.props.timer.instanceId);
     }
     notify() {
         this.props.actions.notifyTimer(this.props.timer.instanceId);
     }
     stopRinging() {
-        debugger;
         if (this.props.timer.ringing) {
             this.props.actions.stopRinging(this.props.timer.instanceId);
         }

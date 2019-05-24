@@ -19,6 +19,7 @@ const gametimer = (state = initialState, action) => {
                 })
             };
         case GAME_TIMER.REMOVE_TIMER_INSTANCE:
+        case GAME_TIMER.DELETE_TIMER:
             return {
                 ...state,
                 timers: _.chain(state.timers).reject(timer => timer.instanceId === action.instanceId).value()
