@@ -24,8 +24,7 @@ class Timer extends Component {
             text: this.getText(diff),
             timer: null,
             millis: diff,
-            passed: 0,
-            label:props.timer.label
+            passed: 0
         };
     }
     start() {
@@ -42,6 +41,7 @@ class Timer extends Component {
             end,
             timer: setInterval(() => this.update(), INTERVAL)
         }));
+        this.props.actions.startTimer(this.props.timer.instanceId);
     }
     stop() {
         if (this.state.timer) {
@@ -103,23 +103,30 @@ class Timer extends Component {
         if (this.state.timer) {
             clearInterval(this.state.timer);
         }
-        this.props.actions.timerDelete(this.props.timer.id);
+        this.props.actions.timerDelete(this.props.timer.instanceId);
     }
     notify() {
-        new Notification(this.state.label + " was done!", {silent:true});
+        this.props.actions.notifyTimer(this.props.timer.instanceId);
+    }
+    stopRinging() {
+        debugger;
+        if (this.props.timer.ringing) {
+            this.props.actions.stopRinging(this.props.timer.instanceId);
+        }
     }
     render() {
-        const { classes } = this.props;
-        const { text, timer, label } = this.state;
-        return <div>
-            <Typography variant="subtitle1" gutterBottom>{label}</Typography>
+        const { classes, timer } = this.props;
+        const { text, start } = this.state;
+        return <div onClick={() => this.stopRinging()}>
+            <Typography variant="subtitle1" gutterBottom>{timer.label}</Typography>
             <Typography variant="body1" gutterBottom>{text}</Typography>
+            {this.props.timer.soundName ? <div><Icon></Icon>{this.props.timer.soundName}</div> : null}
             <IconButton color="secondary" className={classes.button} aria-label="start"
-                onClick={() => this.start()} disabled={timer != null}>
+                onClick={() => this.start()} disabled={start != null}>
                 <Icon>play_arrow</Icon>
             </IconButton>
             <IconButton color="secondary" className={classes.button} aria-label="stop"
-                onClick={() => this.stop()} disabled={timer == null}>
+                onClick={() => this.stop()} disabled={start == null}>
                 <Icon>pause</Icon>
             </IconButton>
             <IconButton color="secondary" className={classes.button} aria-label="reset"

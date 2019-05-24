@@ -4,7 +4,7 @@ import { Field, reduxForm } from 'redux-form';
 import Button from '@material-ui/core/Button';
 
 import NumberSelect from './NumberSelect';
-import { renderTextField } from '../utils/reduxFormHelper';
+import { renderTextField, renderFile } from '../utils/reduxFormHelper';
 
 class TimerForm extends Component {
     render() {
@@ -27,6 +27,8 @@ class TimerForm extends Component {
                     <Field name="second"
                         component={NumberSelect}
                         props={{ min: 0, max: 59, label: "second" }} />
+
+                    <Field name='sound' label='sound' accept='audio/*' component={renderFile} />
                     <Button type="submit">Register</Button>
                 </div>
             </form>

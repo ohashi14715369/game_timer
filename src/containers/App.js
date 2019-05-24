@@ -61,7 +61,7 @@ class App extends Component {
                     </div>
                 </Drawer>
                 {
-                    _.map(gametimer.timers, timer => <Timer key={timer.id} timer={timer} />)
+                    _.map(gametimer.timers, timer => <Timer key={timer.instanceId} timer={timer} />)
                 }
                 <Fab color="secondary" aria-label="Add" className={classes.addButton} onClick={() => actions.createTimerOpen()}>
                     <AddIcon />
