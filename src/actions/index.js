@@ -48,6 +48,7 @@ export const createTimerRegister = (values) => {
 };
 export const deleteTimer = (instanceId) => {
     return (dispatch) => {
+        dispatch(stopRinging(instanceId));
         timerTable.get(instanceId).then(doc => timerTable.remove(doc)).then(dispatch({
             type: GAME_TIMER.DELETE_TIMER,
             instanceId
@@ -134,7 +135,7 @@ export const stopRinging = (instanceId) => {
     return (dispatch, getStore) => {
         const { timers } = getStore().gametimer;
         var timer = _.find(timers, timer => timer.instanceId === instanceId);
-        if (timer.soundSource) {
+        if (timer && timer.soundSource) {
             stopSound(timer.soundSource);
         }
         dispatch({ type: GAME_TIMER.STOP_RINGING, instanceId });

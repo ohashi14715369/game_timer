@@ -55,14 +55,11 @@ class Timer extends Component {
         }
     }
     reset() {
+        this.stop();
         const { millis } = this.state;
-        var start = moment();
-        var end = moment().add(millis, 'milliseconds');
         this.setState(prev => ({
             ...prev,
-            start,
-            end,
-            text: this.getText(this.getDiff(start, end)),
+            text: this.getText(millis),
             passed: 0
         }));
     }
