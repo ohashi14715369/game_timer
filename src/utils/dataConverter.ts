@@ -1,6 +1,6 @@
 // @arg BlobURLString|URLString|Blob|File|TypedArray|ArrayBuffer
 // @arg Function - callback(result:ArrayBuffer, source:Any):void
-export const toArrayBuffer = (source, callback) => {
+export const toArrayBuffer = (source: any, callback: (result: ArrayBuffer, source: any) => void) => {
     if (source.buffer) {
         // TypedArray
         callback(source.buffer, source);
@@ -11,7 +11,12 @@ export const toArrayBuffer = (source, callback) => {
         // Blob or File
         var reader = new FileReader();
         reader.onload = function () {
-            callback(reader.result, source);
+            if (reader.result instanceof ArrayBuffer) {
+                callback(reader.result as ArrayBuffer, source);
+            }
+            else {
+                throw new Error();
+            }
         };
         reader.readAsArrayBuffer(source);
     } else if (typeof source === "string") {
